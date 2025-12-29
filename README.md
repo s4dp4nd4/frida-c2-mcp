@@ -4,6 +4,8 @@ A proof-of-concept, MCP server with streamable HTTP transport that exposes Frida
 
 **This project is designed to run directly on a rooted Android device** (e.g., within Termux) and allow a remote client to analyze and manipulate running applications over the network. It acts as a bridge, turning Frida functions into tools that can be called via HTTP requests, with the goal of enabling automated, agent-based mobile security testing.
 
+https://github.com/user-attachments/assets/7cee77c5-ed40-4797-b6b5-3edb5fdd03ce
+
 ## Core Functionality
 
 - **Process & Application Management:** List installed applications, enumerate running processes, and get information about the foreground application.
