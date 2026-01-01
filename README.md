@@ -35,7 +35,7 @@ The system operates on a client-server model with specific design choices to ena
 
 -   **On-Device Script Bundling with `esbuild`:** Frida versions 17+ require JavaScript to be minified or bundled. As `frida-compile` proved difficult to run directly on Android, this project uses `esbuild` as a lightweight alternative. The server automatically handles the process of writing JS code to a temporary file, bundling it with `esbuild`, and loading the result into the target process.
 
--   **Pinned Frida Version:** The project currently depends on a specific, older version of Frida (17.2.14). This is due to significant challenges in compiling the latest `frida-core` from source on the Android platform. The workaround is to use the pre-compiled version available in the Termux root-repo.
+-   **Manally Compiled Frida Version:** The project currently depends on manually compiling the latest Frida client on-device. This is due to unstable C-bindings in the frida-python library. The workaround is to manually hijack the internal toolchain associated with frida-core and supply Termux-native tooling.
 
 ---
 

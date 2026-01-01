@@ -71,7 +71,6 @@ The process with PID 22153 (owasp.sat.agoat) has been successfully terminated.
 
 # !!!KNOWN ISSUES!!!
 
-- Latest version of the frida client is at the mercy of the termux root repo currently (12/19/25), which is 17.2.14
 - Different AI models will have varied success on invoking the correct tool
 - The 0.15.2 5ire release might break AI invocation, it's better to just [manually run the project with node](https://github.com/nanbingxyz/5ire/blob/main/DEVELOPMENT.md)
 - Session management is not implemented, so if you kill a process there will be a dangling session and there is no way to list interactive sessions
@@ -129,7 +128,7 @@ This setup is pretty tedious as of now, there's kind of some painful restriction
 
 - A Frida server
 
-  - Just use the [Frida Magisk module](https://github.com/ViRb3/magisk-frida/releases/tag/17.2.14-1). Make sure to grab the 17.2.14 version to match with the """latest""" frida client that we'll be interfacing with later
+  - Just use the latest [Frida Magisk module](https://github.com/ViRb3/magisk-frida/releases). Make sure to match the client version of the Frida you choose to use / compile
 
 - Install termux
 
@@ -141,9 +140,59 @@ This setup is pretty tedious as of now, there's kind of some painful restriction
 
 - Inside of termux install all the packages (I might be missing stuff here)
 
-  - The following should install necessary build tools: `pkg install python clang gcc rust nodejs` 
+  - The following should install necessary build tools: `pkg install git python clang gcc rust nodejs ninja pkg-config libresolv-wrapper wget` 
 
-  - Do NOT install frida with pip -- it will fail cuz of the C bindings. Instead install via pkg (AFTER previous step) `pkg install frida frida-dev frida-python` as of 12/19/25 latest version is Frida 17.2.14 .
+  - Do NOT install frida with pip -- it will fail cuz of the C bindings.
+
+- Manually build the Frida client
+
+  - Find the latest frida-core-devkit for the appropriate architecture and use `wget` to grab the .xz file
+
+  - `mkdir -p frida-core && tar -xf <yourdevkit.tar.xz> -C frida-core`
+
+  - Grab the frida-python project `git clone https://github.com/frida/frida-python.git`
+
+- Run the following (there might be missing steps here)
+
+```
+# This config should work but if it gives you trouble try hardcoding all the paths instead of using $HOME references
+
+export HOME=/data/data/com.termux/files/home
+export PREFIX=/data/data/com.termux/files/usr
+export FRIDA_CORE_DEVKIT="$HOME/frida-core"
+export PKG_CONFIG_PATH="$HOME/frida-core"
+
+# CHANGE THIS BASED ON WHAT ARCHITECTURE YOU'RE ON
+
+cd $HOME/frida-python/deps/toolchain-linux-arm64/bin/
+
+# Some of the toolchain native binaries are broken so we'll swap them out here
+
+# Replace pkg-config
+mv pkg-config pkg-config.backup
+ln -sf $PREFIX/bin/pkg-config ./pkg-config
+
+# Replace ninja
+mv ninja ninja.backup
+ln -sf $PREFIX/bin/ninja ./ninja
+
+# In the termux environment libresolv doesn't exist but libresolv_wrapper does, so we'll make a symlink here too
+
+ln -sf $PREFIX/lib/libresolv_wrapper.so $PREFIX/lib/libresolv.so
+
+# Build with hijacked toolchain
+
+cd $HOME/frida-python
+rm -rf build/
+
+LDFLAGS="-L$PREFIX/lib -lpython3.12 -llog -latomic" \
+pip install . --no-index --no-build-isolation
+
+# LEAVE THE frida-python library before testing!
+
+cd ~
+python3 -c "import frida;print(frida.__version__)
+```
 
 - Setup termux environment
 
@@ -157,6 +206,6 @@ This setup is pretty tedious as of now, there's kind of some painful restriction
 
   - `pip install fastmcp pydantic`
 
-  - **WARNING** Do not run `pip install frida`, because it will break. Only use `pkg install frida-python` as mentioned above
+  - **WARNING** Do not run `pip install frida`, because it will break.
 
 - Install your target application. As a PoC I used [AndroGoat](https://github.com/satishpatnayak/AndroGoat)

@@ -7,7 +7,7 @@ from threading import Lock
 import tempfile
 import os
 
-mcp = FastMCP("FridaAsync", json_response=True, stateless_http=False)
+mcp = FastMCP("FridaC2MCP", json_response=True, stateless_http=False)
 
 # Globals for managing interactive sessions
 _scripts = {}

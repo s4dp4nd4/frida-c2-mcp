@@ -18,9 +18,9 @@ Running Frida _client_ on Android architecture
 
   * Used this as a reference but was not able to follow the flow properly - https://github.com/frida/frida/discussions/2411
 
-  * `make` was failing to build. Likely a linker issue but have not been able to resolve. Essentially running into this issue here: https://github.com/frida/frida/issues/2864
+  * `make` was failing to build. Essentially running into this issue here: https://github.com/frida/frida/issues/2864
 
-* Solution - As a band-aid used `pkg install root-repo; pkg install frida-python frida frida-dev` which restricts us to 17.2.14
+* Solution - Hijacked the internal toolchain by swapping out broken binaries with Termux-native versions
 
 Running Frida scripts with 17
 --------------
@@ -33,11 +33,6 @@ Running Frida scripts with 17
 
 Open issues
 =================
-
-Can't update to latest frida with frida-core
----------
-
-* Not sure why this isn't working but would like to fully upgrade to latest frida with latest python
 
 5ire can't render frida scripts
 ---------
