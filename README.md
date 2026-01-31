@@ -2,6 +2,8 @@
 
 A proof-of-concept, MCP server with streamable HTTP transport that exposes Frida's powerful dynamic instrumentation capabilities as a simple, remote server.
 
+[![TLDR Featured](https://img.shields.io/badge/Featured%20in-TLDR%20InfoSec-blue)](https://tldr.tech/infosec/2026-01-30)
+
 **This project is designed to run directly on a rooted Android device** (e.g., within Termux) and allow a remote client to analyze and manipulate running applications over the network. It acts as a bridge, turning Frida functions into tools that can be called via HTTP requests, with the goal of enabling automated, agent-based mobile security testing.
 
 https://github.com/user-attachments/assets/7cee77c5-ed40-4797-b6b5-3edb5fdd03ce
@@ -38,6 +40,18 @@ The system operates on a client-server model with specific design choices to ena
 -   **Manally Compiled Frida Version:** The project currently depends on manually compiling the latest Frida client on-device. This is due to unstable C-bindings in the frida-python library. The workaround is to manually hijack the internal toolchain associated with frida-core and supply Termux-native tooling.
 
 ---
+
+## Roadmap & Progress
+
+**Android**
+
+- **Native tooling upgrade:** Since I have a manual build technique for Frida I can just drop `esbulid` and just install `frida-tools` over Frida so `frida-compile` can be used instead of `esbuild`, so planning on releasing that for a cleaner build. This way we can just call all our favorite frida tools on-device XD
+
+**iOS**
+
+- **iOS rootless jailbreak support:** I went on a truly unhinged and nightmarish foray into compiler hell, but I have a (mostly) working version that I tested on my rootless jailbroken iPhone X running iOS 16.7.12 **almost** ready for release! :3
+- **Python3.12:** This will feature a custom-compiled Python 3.12, a version not even available yet via Procursus repo. It also includes a suite of custom-compiled Python packages patched specifically for rootless environments. This was necessary imo to bring the full power of  `fastmcp` to iOS.
+- **Nodeless design:** Node.js is not necessary. Supports (only) ObjC for on-the-fly compilation.
 
 ## Acknowledgments
 This project is a networked evolution of the original [FridaMCP](https://github.com/dnakov/frida-mcp) by Daniel Nakov. 
